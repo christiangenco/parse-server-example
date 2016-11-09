@@ -27,6 +27,20 @@ var api = new ParseServer({
 
 var app = express();
 
+// try to fix CORS: https://github.com/ParsePlatform/parse-server-example/issues/20#issuecomment-177762837
+app.all('*', function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'accept, content-type, x-parse-application-id, x-parse-rest-api-key, x-parse-session-token');
+     // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+      res.send(200);
+    }
+    else {
+      next();
+    }
+});
+
 // Serve static assets from the /public folder
 app.use('/public', express.static(path.join(__dirname, '/public')));
 
